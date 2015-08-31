@@ -1,0 +1,153 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<title>Crud</title>
+	<meta name="description" content="My Parse App">
+	<meta name="viewport" content="width=device-width">
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="jumbotron">
+	<div class="container">
+		<div class="tab-content">
+
+		  <!-- MENU -->
+		  <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+			  <li class="active"> 
+				  <a href="#cadastro" data-toggle="tab">Cadastro</a> 
+			  </li>
+			  <li> 
+				<a href="#lista" data-toggle="tab">Lista</a> 
+			</li>
+		</ul>   
+
+		<!-- CADASTRO -->
+		<div class="tab-pane active" id="cadastro">
+			<form role="form">
+				<br style="clear:both">
+				<h3 style="margin-bottom: 25px; text-align: center;">Cadastro de Cliente</h3>
+				<div class="form-group">
+					<input type="text" class="form-control" id="name" name="name" placeholder="Nome" required>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="celular" name="celular" placeholder="Celular" required>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="endereco" name="endereco" placeholder="Endereço" required>
+				</div>
+
+				<button type="button" id="submit" name="submit" class="btn btn-primary pull-right">Enviar</button>
+			</form>
+		</div>
+
+		<!-- LISTA -->
+		<div class="tab-pane" id="lista">
+			<br style="clear:both">
+			<h3 style="margin-bottom: 25px; text-align: center;">Lista de Clientes</h3>
+			<table class="table table-bordered">
+			  <thead>
+				<tr><td>Nome</td><td>Email</td><td>Celular</td><td>Endereço</td></tr>  
+			</thead>
+			<tbody id="conteudo">
+				
+				
+			</tbody>
+		</table>
+	</div>
+
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+	Parse.initialize("qI6vhyICIeCd83NjRvIBkua0siuAlY1DcOKyq5qF", "Tc0OYjf2AWnLThFwSg17JNw5YESycUB3X3ptTOG0");
+
+	$(document).ready(function ($) {
+		$('#tabs').tab();
+	});
+
+	var Cliente = Parse.Object.extend("Cliente");
+
+	$("#submit").click(function(){
+		var cliente = new Cliente();    
+
+		cliente.save({
+		  nome : $("#name").val(),
+		  email : $("#email").val(),
+		  //celular : parseInt($("#celular").val()),
+      celular : $("#celular").val(),
+		  endereco : $("#endereco").val()
+	  }, {
+		  success: function(object) {
+			alert("Cadastro com sucesso!");
+			listar();
+		},
+		error: function(model, error) {
+		  alert("Erro ao cadastrar!");
+	  }
+	});
+	});
+
+	function listar(){
+	  console.log("listar");
+	  var query = new Parse.Query(Cliente);
+	  
+
+	  //query.ascending("nome");
+	  //query.descending("score");
+	  //query.equalTo("playerName", "Dan Stemkoski");
+	  //query.notEqualTo("playerName", "Michael Yabuti");
+	  //query.greaterThan("playerAge", 18);
+	  //query.limit(10); // limit to at most 10 results
+
+	  //query.first({ success: function(object) {  Successfully retrieved the object.  },  error: function(error) {    alert("Error: " + error.code + " " + error.message);  }});
+	  //query.skip(10); // skip the first 10 results
+
+
+	  // Restricts to wins < 50
+	//	query.lessThan("wins", 50);
+
+		// Restricts to wins <= 50
+	//	query.lessThanOrEqualTo("wins", 50);
+
+		// Restricts to wins > 50
+	//	query.greaterThan("wins", 50);
+
+		// Restricts to wins >= 50
+	//	query.greaterThanOrEqualTo("wins", 50);
+
+	//query.containedIn("playerName", ["Jonathan Walsh", "Dario Wunsch", "Shawn Simon"]);
+
+
+	  query.find({
+		success: function(results) {
+
+			$("#conteudo").empty();
+
+			for (var i = 0; i < results.length; i++) { 
+				var object = results[i];
+				$("#conteudo").append("<tr><td>" + object.get('nome') + "</td><td>" + object.get('email') + "</td><td>" + object.get('celular') + "</td><td>" + object.get('endereco') + "</td></tr>  ");
+			}
+		},
+		error: function(error) {
+		  alert("Error: " + error.code + " " + error.message);
+	  }
+	});
+	}
+
+	listar();
+
+
+
+</script>
+</body>
+</html>

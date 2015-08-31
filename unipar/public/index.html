@@ -1,0 +1,120 @@
+
+<html>
+  <head>
+    <title>Projeto Unipar</title>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="//www.parsecdn.com/js/parse-1.4.2.min.js"></script>
+    <script type="text/javascript">
+        Parse.initialize("qeeu00FyhMMvCyD0Kiq9diT21URAbuEs8aZKFhMP", "Z0K3MxdrmjHRiqRzjAM83XgTTKt3JiLXmj55KDAw");
+
+        var UserObject = Parse.Object.extend("User");
+
+        function salvar(){
+          
+          var user = new UserObject();
+
+          var nome = $("#inputName").val();
+          var email = $("#inputEmail").val();
+          var senha = $("#inputPassword").val();
+
+          console.log("salvar");
+
+          user.save({username: nome, email:email, password:senha}).then(function(object) {              
+              alert("Cadastro com sucesso !");
+              listar();
+              
+          });
+          //listar();
+        }
+
+        function listar(){
+          console.log("listar");
+          var query = new Parse.Query(UserObject);
+          query.ascending("username");
+          query.find({
+            success: function(results) {
+
+                $("#conteudo").empty();
+
+              for (var i = 0; i < results.length; i++) { 
+                var object = results[i];
+                $("#conteudo").append("<tr><td>" + object.get('username') + "</td><td>" + object.get('email') + "</td></tr>  ");
+              }
+            },
+            error: function(error) {
+              alert("Error: " + error.code + " " + error.message);
+            }
+          });
+        }
+
+        listar();
+
+
+    </script>
+
+    
+</head>
+  <body>
+    <div>
+      
+      <div class="container">
+        <h1>Congratulations! You're already hosting with Parse.</h1>
+
+        <div id="content">
+            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                <li class="active"><a href="#cadastro" data-toggle="tab">Cadastro</a></li>
+                <li><a href="#lista" data-toggle="tab">Lista</a></li>
+                
+            </ul>
+            <div id="my-tab-content" class="tab-content">
+                <div class="tab-pane active" id="cadastro">
+                   
+                        <div class="form-group">
+                            <label for="inputName">Nome</label>
+                            <input type="text" class="form-control" id="inputName" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail">Email</label>
+                            <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">Password</label>
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox"> Remember me</label>
+                        </div>
+                        <button class="btn btn-primary" onclick="return salvar()">Salvar</button>
+                   
+                </div>
+                <div class="tab-pane" id="lista">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr><td>Nome</td><td>Email</td></tr>  
+                      </thead>
+                      <tbody id="conteudo">
+                        
+                        
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+         
+         
+        <script type="text/javascript">
+            $(document).ready(function ($) {
+                $('#tabs').tab();
+            });
+        </script>    
+        </div> <!-- container -->
+    </div>
+  </body>
+</html>
+
